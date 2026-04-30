@@ -1,244 +1,166 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="mobile-web-app-capable" content="yes">
+索引号
+<<div class="detail-item"> <label>购入价格（愿）</label>="zh-CN">
+<<input type="number" value=">
+  <${ 项目="UTF-8">
+  <购买价格 " onblur="saveItem(="viewport" ${=索引号>
+  <<div class="detail-item"> <label>预计二手卖出（愿）</label>="apple-mobile-web-app-capable" <input type="number" value="="yes">
+  <${ 项目="apple-mobile-web-app-status-bar-style" resalePrice="black-translucent">
+  <" onblur="saveItem( ${="mobile-web-app-capable" 索引号="yes">
   <title>资产折旧记账</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-    body {
-      background: #f5f7fa;
-      padding-bottom: 100px;
-    }
-    .header {
-      background: #007aff;
-      color: white;
-      padding: 55px 16px 16px;
-      text-align: center;
-      font-size: 18px;
-      font-weight: 600;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 10px auto;
-      background: white;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      max-width: 98%;
-    }
-    th, td {
-      padding: 8px 4px;
-      text-align: center;
-      border-bottom: 1px solid #eee;
-      font-size: 12px;
-    }
-    th {
-      background: #f0f4f8;
-      font-weight: 600;
-    }
-    input {
-      width: 100%;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      padding: 4px 2px;
-      font-size: 12px;
-      text-align: center;
-      outline: none;
-    }
-    /* 计算字段设为只读，避免误改 */
-    .calc-input {
-      background: #f9f9f9;
-      border: none;
-      pointer-events: none;
-    }
-    .del-btn {
-      color: #ff3b30;
-      background: none;
-      border: none;
-      font-size: 12px;
-      cursor: pointer;
-    }
-    .add-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: #007aff;
-      color: white;
-      font-size: 24px;
-      border: none;
-      box-shadow: 0 4px 12px rgba(0,122,255,0.3);
-      z-index: 99;
-      cursor: pointer;
-    }
-    .total-row {
-      background: #e8f4ff;
-      font-weight: bold;
-    }
+    *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+    body{background:#f5f7fa;padding-bottom:80px;}
+    .header{background:#007aff;color:#fff;padding:50px 16px 14px;text-align:center;font-size:18${;font-weight:600;索引号:级班级;标签:0;z-index:10;}
+
+    .购入价格（愿）{/label>(<input type="number" value=":#fff;${:10项目;border-radius:10购买价格;" onblur="saveItem(:${;box-shadow:0 1索引号 6标签 #00000015;}
+    .row-main{级班级:14标签 16预计二手卖出（愿）;/label>（<input type=[Number]value=":${;}
+    .main-title{font-size:16项目;font-weight:600;resalePrice:#007aff;margin-bottom:10"onblur="saveItem（;}
+    .main-info{${:索引号;grid-template-columns:1，'resalePrice'，Number(this.value)）">，1）；="detail-Item"级><）； 1每天预计成本（愿）;标签（，:6输入 4类型;}
+    .main-info 数量{font-size:13价值";${:#333;}
+    .main-info 项目{每日成本:#007aff;font-weight:600;}
+
+    .row-detail{max-height:0;失去焦点时:"saveItem（;${:max-height 0.3索引号 ，'dailyCost'，Number(this.value)）";}
+    .row-detail.按钮{max-height:600班级;点击时:12"delItem（ 16${;border-top:1索引号 ）删除本条记录/ibao mayou wItem（）；>you mayoto you（）；>（//idx）{>/（'you mayou？'）{>[earBack}=$；）；D. to Fixed（2）||you #eee;}
+
+    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 8px;margin-bottom:10px;}
+    .detail-item{display:flex;flex-direction:column;}
+    .detail-item label{font-size:12px;color:#999;margin-bottom:4px;}
+    .detail-item input{border:1px solid #ddd;border-radius:6px;padding:8px 6px;font-size:14px;text-align:center;outline:none;}
+    .calc{background:#f8f8f8;border:none;pointer-events:none;}
+
+    .del-btn{color:#ff3b30;font-size:13px;background:none;border:none;padding:6px 0;text-align:left;cursor:pointer;}
+    .total-bar{background:#e8f4ff;margin:10px;border-radius:10px;padding:14px 16px;text-align:center;font-weight:600;}
+    .add-btn{position:fixed;bottom:20px;right:20px;width:56px;height:56px;border-radius:50%;background:#007aff;color:#fff;font-size:26px;border:none;box-shadow:0 4px 12px rgba(0,122,255,0.3);z-index:99;cursor:pointer;}
   </style>
 </head>
 <body>
-  <div class="header">资产折旧记账</div>
-
-  <table>
-    <thead>
-      <tr>
-        <th>类目</th>
-        <th>购买日期</th>
-        <th>购入价格</th>
-        <th>当前日期</th>
-        <th>已用天数</th>
-        <th>平均每天金额</th>
-        <th>预计二手卖出</th>
-        <th>每天预计成本</th>
-        <th>剩余价值</th>
-        <th>预计回本/年</th>
-        <th>操作</th>
-      </tr>
-    </thead>
-    <tbody id="tableBody"></tbody>
-    <tfoot>
-      <tr class="total-row">
-        <td colspan="5">合计（每天开支成本）</td>
-        <td id="totalAvg" colspan="6">0.00</td>
-      </tr>
-    </tfoot>
-  </table>
-
-  <button class="add-btn" onclick="addRow()">+</button>
+<div class="header">资产折旧记账</div>
+<div id="listWrap"></div>
+<div class="total-bar">每日总开支成本：<span id="totalAvg">0.00</span> 元/天</div>
+<button class="add-btn" onclick="addNewItem()">+</button>
 
 <script>
-  // 读取本地数据
-  let data = JSON.parse(localStorage.getItem('depreciationData')) || [];
-  
-  // 核心：获取当天日期（只算一次，避免重复计算）
-  const todayInfo = (() => {
-    const today = new Date();
-    return {
-      date: today,
-      str: today.toISOString().split('T')[0]
-    };
-  })();
+let data = JSON.parse(localStorage.getItem('assetList')) || [];
+const today = new Date();
+const todayStr = today.toISOString().split('T')[0];
 
-  // 计算单行数据（抽离逻辑，避免重复代码）
-  function calculateRowData(item) {
-    const buyDate = new Date(item.buyDate);
-    const usedDays = Math.max(0, Math.floor((todayInfo.date - buyDate) / (1000 * 60 * 60 * 24)));
-    const avgDaily = usedDays > 0 ? (item.buyPrice / usedDays) : 0;
-    // 你的最新公式：剩余价值 = 购入价格 - 预计二手卖出 - (已用天数 × 每天预计成本)
-    const remainingValue = item.buyPrice - (item.resalePrice || 0) - (usedDays * (item.dailyCost || 0));
-    const expectedYears = remainingValue / 365;
-    return { usedDays, avgDaily, remainingValue, expectedYears };
-  }
+// 计算单条逻辑
+function calcOne(item){
+  let buyDate = new Date(item.buyDate);
+  let usedDays = Math.max(0, Math.floor((today - buyDate) / (1000*60*60*24)));
+  let avgDay = usedDays > 0 ? (item.buyPrice / usedDays) : 0;
+  let dailyCost = Number(item.dailyCost) || 0;
+  let resale = Number(item.resalePrice) || 0;
+  let remainVal = item.${ - <div>已用天数：<span class=“usedDays”> - (${ * D);
+  使用日 天</span></div> = <div>平均每天金额：<span class=“avgDay”>yum / 365;
+  ${ {D, avgDay, toFixed, <div>剩余价值：<span class=“remainVal”>yum};
+}
 
-  // 只更新合计（不重渲染整个表格，解决卡顿）
-  function updateTotal() {
-    let totalAvg = 0;
-    data.forEach(item => {
-      const { avgDaily } = calculateRowData(item);
-      totalAvg += avgDaily;
-    });
-    document.getElementById('totalAvg').textContent = totalAvg.toFixed(2);
-  }
+跨度{
+班级“yearBack”(){
+  > = <$>D/一年<toFixed级=班级> = <0;
+  级{.班级(级=>{
+    班级
+    <标签>类目名称</label> += <input value=".${;*
+  });
+  项目.种类('totalAvg')." 失去焦点时=saveItem（=${.索引号（2）；
+}
 
-  // 更新单行（核心优化：只更当前行，不重绘整个表格）
-  function updateSingleRow(index) {
-    const row = document.querySelector(`#tableBody tr[data-index="${index}"]`);
-    if (!row) return;
-    
-    const item = data[index];
-    const { usedDays, avgDaily, remainingValue, expectedYears } = calculateRowData(item);
-    
-    // 只更新当前行的计算字段，不重建DOM
-    row.querySelector('.used-days').value = usedDays;
-    row.querySelector('.avg-daily').value = avgDaily.toFixed(2);
-    row.querySelector('.remaining-value').value = remainingValue.toFixed(2);
-    row.querySelector('.expected-years').value = expectedYears.toFixed(2);
-    
-    // 更新合计
-    updateTotal();
-  }
+<级班级="detail-item">
+<标签>购买日期</label> <input type="date" value="(${){
+  项目购买日期 = 今天." “onchange”在中文中通常翻译为“改变时="saveItem(('.item')[${];
+  索引号.<级班级="detail-item">('.row-detail').<让盒 = 文档
+}
 
-  // 渲染表格（初始化/添加行时用，平时不重绘）
-  function renderTable() {
-    const tbody = document.getElementById('tableBody');
-    tbody.innerHTML = '';
+querySelectorAll() 方法返回文档中匹配指定 CSS 选择器索引号=//保存数据 you you you you you you（idx，idx，field，val）{data[idx][field]=localStorage.setItem（'assetList'，JSON.stringify(data)；/////Jone=calcOne(data[idx])；}，'dailyCost'，Number(this.value)". 让*********项目[文档]querySelectorAll（. '. item'. ）+索引号.查询选择器.'。usedDays）。innerText=D。usedDays+'(2)天{
+'；itemDom.querySelector('(avgDay(, '). innerText='{, 啧啧){
+  <'+D.avgDay.toFixed(2)；}itemDom.querySelector('
+  remainVal.'). innerText='('assetList', D(.remainVal{(toFixed));
+  ；项目查询选择器
+  内部文本 D(一年toFixed);
+  //渲染初次列表+=you renderList（）{；you you renderList=“detail-item”>[<>>();
+}
 
-    data.forEach((item, index) => {
-      const { usedDays, avgDaily, remainingValue, expectedYears } = calculateRowData(item);
-      
-      const tr = document.createElement('tr');
-      tr.dataset.index = index; // 标记行索引
-      tr.innerHTML = `
-        <td><input value="${item.category || ''}" oninput="updateField(${index}, 'category', this.value)" placeholder="如：手机"></td>
-        <td><input type="date" value="${item.buyDate || todayInfo.str}" onchange="updateField(${index}, 'buyDate', this.value)"></td>
-        <td><input type="number" value="${item.buyPrice || 0}" oninput="updateField(${index}, 'buyPrice', Number(this.value))" placeholder="元"></td>
-        <td><input class="calc-input" value="${todayInfo.str}"></td>
-        <td><input class="calc-input used-days" value="${usedDays}"></td>
-        <td><input class="calc-input avg-daily" value="${avgDaily.toFixed(2)}"></td>
-        <td><input type="number" value="${item.resalePrice || 0}" oninput="updateField(${index}, 'resalePrice', Number(this.value))" placeholder="元"></td>
-        <td><input type="number" value="${item.dailyCost || 0}" oninput="updateField(${index}, 'dailyCost', Number(this.value))" placeholder="元"></td>
-        <td><input class="calc-input remaining-value" value="${remainingValue.toFixed(2)}"></td>
-        <td><input class="calc-input expected-years" value="${expectedYears.toFixed(2)}"></td>
-        <td><button class="del-btn" onclick="deleteRow(${index})">删除</button></td>
-      `;
-      tbody.appendChild(tr);
-    });
+班级
+级 班级(点击时){
+  "toggleExpand(${idx})" 级 = 班级($[项目]);
+  种类 '未命名类目' = youmakovideo.步行('.item')[/div>：<div class="main-info">，<div>当前日期：<span>${todayStr}</S];
+  平底锅./div>：0，<div>已用天数：<span class=[usedDays]>${D.usedDays}won</s('.usedDays').平底锅 = /div>：0，<div>平均每天金额：<span class=[avgDay]>yum${D.avgDay.toFixed（2）}</s.平底锅 + 级;
+  剩余价值：.跨度('.avgDay').班级 = “remainVal” + yum$.D.remainVal(2);
+  toFixed（2）.包 div('.remainVal').级文档 = 班级 + 级.班级.让(2);
+  avgDay.使用日('.yearBack').项目 = 购买价格.使用日.让(2);
+}
 
-    updateTotal();
-  }
+每日成本
+数量项目(){
+  每日成本让 = 转售.数量('listWrap');
+  项目.resalePrice = '';
+  让.remainVal((项目, $)=>{
+    - <级 = 已用天数：(跨度
+    班级 /“usedDays”>> -'assetList'$<D使用日=[天]级=> = <级=平均每天金额：><跨度班级="del-btn"“avgDay”=啧啧>$<D
+avgDay
+toFixed})">
+, <
+级
+剩余价值：}</span></跨度>
+班级() “remainVal”啧啧$.D}remainVal
+toFixed.级.预计回本(2)}</span></com：>
+查询选择器内部文本'¥'.D.avgDay(2)}</span></div>
+toFixed项目查询选择器.内部文本.'¥'(2)}</span></div>
+        </div>
+      </div>
+D
+remainVal
+toFixed
+项目
+查询选择器内部文本D.一年||''}toFixed// 渲染初次列表功能},'category',this.value)">
+          </div>
+renderList
+让
+包文档获取元素的 Id.包||innerHTML}数据“forEach”在编程语言中通常表示“对项目},'buyDate',this.value)">
+          </div>
+索引号
+让
+D卡尔康项目.让||0}超文本标记语言<div class="item"><div class="row-main" onclick="toggleExpand(},'buyPrice',Number(this.value))">
+          </div>
+${
+索引号
+<div class="main-title">${项目.种类||0}'未命名类目'点击展开编辑</div<div class="main-info">},'resalePrice',Number(this.value))">
+data.forEach（（item，idx）=>{D$;一年
+</新增条目（）；>you you mayou wItem（）<//you mayoto you（）；>（//idx）{>/（'you mayou？'）{>[earBack]+=/>$；）；D. toFixed（2）|you<mayou mayou mayou=[row-DeDule]querySelectorAll you mayou Jone=[detail]>（<CSS you mayou mayou=“detail-Item]”>）；[CSS you mayou mayou mayou mayou mayou=“项目”>]="row-main" '¥'=D>:'',<avgDay"main-title">('.item')[级{];
+toFixed项目查询选择器
+内部文本{'¥'
+级
+        </div>
+D = remainVal>toFixed项目查询选择器内部文本<D=[一年]toFixed=//渲染初次列表功能}，“you mayoto you”，this.value）>。renderList'
+数据{{
+    </div>
+    `;
+这价值
+  });
+“saveItem（索引号让******}，‘buyDate’，this.value）”
+平均每天金额：
 
-  // 添加新行
-  function addRow() {
-    data.push({
-      category: '',
-      buyDate: todayInfo.str,
-      buyPrice: 0,
-      resalePrice: 0,
-      dailyCost: 0
-    });
-    saveData();
-    renderTable(); // 只有添加行时才重绘，平时不重绘
-  }
+级
+跨度班级让
+啧啧
+>.<> <=让
+项目
+颜色
+跨度
+每日成本
 
-  // 更新字段（只更新当前行，解决卡顿）
-  function updateField(index, field, value) {
-    data[index][field] = value;
-    saveData();
-    updateSingleRow(index); // 只更当前行，不重绘整个表格
-  }
+//新增条目（）；>you you mayou wItem（）<//you mayoto you（）；>（//idx）{>/（'you mayou？'）{>[earBack]+=/>$；）；D
+包
+过渡
+<refreshTotal
+小卖部
+显示
+按钮
+班级
 
-  // 删除行
-  function deleteRow(index) {
-    if (confirm('确定删除？')) {
-      data.splice(index, 1);
-      saveData();
-      renderTable(); // 删除行后重绘（仅此时）
-    }
-  }
-
-  // 保存到本地存储（轻量化，无卡顿）
-  function saveData() {
-    localStorage.setItem('depreciationData', JSON.stringify(data));
-  }
-
-  // 初始化
-  renderTable();
-</script>
-</body>
-</html>
+级
+衬垫
+索引号
+${
+项目}级{{<卡尔康<///你站在你的面前=“细节-项”>*级{<数据索引号领域让<div class=[Item]>/<>you mayou:<span class=[avgDay]>yum）；. you=youclass=[main-info]>}，'resalePrice'，Number(this.value)）>>>="you mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou mayou
