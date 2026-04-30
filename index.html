@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>资产折旧记账</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    body {
+      background: #f5f7fa;
+      padding-bottom: 100px;
+    }
+    .header {
+      background: #007aff;
+      color: white;
+      padding: 55px 16px 16px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px auto;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      max-width: 98%;
+    }
+    th, td {
+      padding: 8px 4px;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+      font-size: 12px;
+    }
+    th {
+      background: #f0f4f8;
+      font-weight: 600;
+    }
+    input {
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 4px 2px;
+      font-size: 12px;
+      text-align: center;
+      outline: none;
+    }
+    /* 计算字段设为只读，避免误改 */
+    .calc-input {
+      background: #f9f9f9;
+      border: none;
+      pointer-events: none;
+    }
+    .del-btn {
+      color: #ff3b30;
+      background: none;
+      border: none;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .add-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #007aff;
+      color: white;
+      font-size: 24px;
+      border: none;
+      box-shadow: 0 4px 12px rgba(0,122,255,0.3);
+      z-index: 99;
+      cursor: pointer;
+    }
+    .total-row {
+      background: #e8f4ff;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">资产折旧记账</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>类目</th>
+        <th>购买日期</th>
+        <th>购入价格</th>
+        <th>当前日期</th>
+        <th>已用天数</th>
+        <th>平均每天金额</th>
+        <th>预计二手卖出</th>
+        <th>每天预计成本</th>
+        <th>剩余价值</th>
+        <th>预计回本/年</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+    <tfoot>
+      <tr class="total-row">
+        <td colspan="5">合计（每天开支成本）</td>
+        <td id="totalAvg" colspan="6">0.00</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <button class="add-btn" onclick="addRow()">+</button>
+
+<script>
+  // 读取本地数据
+  let data = JSON.parse(localStorage.getItem('depreciationData')) || [];
+  
+  // 核心：获取当天日期（只算一次，避免重复计算）
+  const todayInfo = (() => {
+    const today = new Date();
+    return {
+      date: today,
+      str: today.toISOString().split('T')[0]
+    };
+  })();
+
+  // 计算单行数据（抽离逻辑，避免重复代码）
+  function calculateRowData(item) {
+    const buyDate = new Date(item.buyDate);
+    const usedDays = Math.max(0, Math.floor((todayInfo.date - buyDate) / (1000 * 60 * 60 * 24)));
+    const avgDaily = usedDays > 0 ? (item.buyPrice / usedDays) : 0;
+    // 你的最新公式：剩余价值 = 购入价格 - 预计二手卖出 - (已用天数 × 每天预计成本)
+    const remainingValue = item.buyPrice - (item.resalePrice || 0) - (usedDays * (item.dailyCost || 0));
+    const expectedYears = remainingValue / 365;
+    return { usedDays, avgDaily, remainingValue, expectedYears };
+  }
+
+  // 只更新合计（不重渲染整个表格，解决卡顿）
+  function updateTotal() {
+    let totalAvg = 0;
+    data.forEach(item => {
+      const { avgDaily } = calculateRowData(item);
+      totalAvg += avgDaily;
+    });
+    document.getElementById('totalAvg').textContent = totalAvg.toFixed(2);
+  }
+
+  // 更新单行（核心优化：只更当前行，不重绘整个表格）
+  function updateSingleRow(index) {
+    const row = document.querySelector(`#tableBody tr[data-index="${index}"]`);
+    if (!row) return;
+    
+    const item = data[index];
+    const { usedDays, avgDaily, remainingValue, expectedYears } = calculateRowData(item);
+    
+    // 只更新当前行的计算字段，不重建DOM
+    row.querySelector('.used-days').value = usedDays;
+    row.querySelector('.avg-daily').value = avgDaily.toFixed(2);
+    row.querySelector('.remaining-value').value = remainingValue.toFixed(2);
+    row.querySelector('.expected-years').value = expectedYears.toFixed(2);
+    
+    // 更新合计
+    updateTotal();
+  }
+
+  // 渲染表格（初始化/添加行时用，平时不重绘）
+  function renderTable() {
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+
+    data.forEach((item, index) => {
+      const { usedDays, avgDaily, remainingValue, expectedYears } = calculateRowData(item);
+      
+      const tr = document.createElement('tr');
+      tr.dataset.index = index; // 标记行索引
+      tr.innerHTML = `
+        <td><input value="${item.category || ''}" oninput="updateField(${index}, 'category', this.value)" placeholder="如：手机"></td>
+        <td><input type="date" value="${item.buyDate || todayInfo.str}" onchange="updateField(${index}, 'buyDate', this.value)"></td>
+        <td><input type="number" value="${item.buyPrice || 0}" oninput="updateField(${index}, 'buyPrice', Number(this.value))" placeholder="元"></td>
+        <td><input class="calc-input" value="${todayInfo.str}"></td>
+        <td><input class="calc-input used-days" value="${usedDays}"></td>
+        <td><input class="calc-input avg-daily" value="${avgDaily.toFixed(2)}"></td>
+        <td><input type="number" value="${item.resalePrice || 0}" oninput="updateField(${index}, 'resalePrice', Number(this.value))" placeholder="元"></td>
+        <td><input type="number" value="${item.dailyCost || 0}" oninput="updateField(${index}, 'dailyCost', Number(this.value))" placeholder="元"></td>
+        <td><input class="calc-input remaining-value" value="${remainingValue.toFixed(2)}"></td>
+        <td><input class="calc-input expected-years" value="${expectedYears.toFixed(2)}"></td>
+        <td><button class="del-btn" onclick="deleteRow(${index})">删除</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    updateTotal();
+  }
+
+  // 添加新行
+  function addRow() {
+    data.push({
+      category: '',
+      buyDate: todayInfo.str,
+      buyPrice: 0,
+      resalePrice: 0,
+      dailyCost: 0
+    });
+    saveData();
+    renderTable(); // 只有添加行时才重绘，平时不重绘
+  }
+
+  // 更新字段（只更新当前行，解决卡顿）
+  function updateField(index, field, value) {
+    data[index][field] = value;
+    saveData();
+    updateSingleRow(index); // 只更当前行，不重绘整个表格
+  }
+
+  // 删除行
+  function deleteRow(index) {
+    if (confirm('确定删除？')) {
+      data.splice(index, 1);
+      saveData();
+      renderTable(); // 删除行后重绘（仅此时）
+    }
+  }
+
+  // 保存到本地存储（轻量化，无卡顿）
+  function saveData() {
+    localStorage.setItem('depreciationData', JSON.stringify(data));
+  }
+
+  // 初始化
+  renderTable();
+</script>
+</body>
+</html>
